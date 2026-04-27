@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Disease Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A4D68;
+            --primary-light: #088395;
+            --accent: #05BFDB;
+            --dark: #001524;
+            --light: #E8F4F8;
+            --white: #FFFFFF;
+            --gray: #64748B;
+            --success: #059669;
+            --warning: #F59E0B;
+            --danger: #DC2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, var(--light) 0%, var(--white) 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(10, 77, 104, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: '⚕';
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-light);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0 3rem;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.3s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 4rem;
+            font-weight: 400;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Cards Section */
+        .cards-section {
+            padding: 4rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .disease-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(10, 77, 104, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .disease-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        .disease-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .disease-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .disease-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .disease-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .disease-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(10, 77, 104, 0.15);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.4s ease;
+        }
+
+        .disease-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-icon.heart {
+            background: linear-gradient(135deg, #DC2626, #F87171);
+        }
+
+        .card-icon.skin {
+            background: linear-gradient(135deg, #F59E0B, #FCD34D);
+        }
+
+        .card-icon.lung {
+            background: linear-gradient(135deg, #0EA5E9, #7DD3FC);
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .card-features li {
+            padding: 0.5rem 0;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .card-button {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(10, 77, 104, 0.3);
+        }
+
+        .card-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(10, 77, 104, 0.4);
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, rgba(10, 77, 104, 0.03), rgba(8, 131, 149, 0.03));
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .about-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(10, 77, 104, 0.08);
+            transition: all 0.4s ease;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .about-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .about-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .about-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .about-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .about-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(10, 77, 104, 0.12);
+        }
+
+        .about-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-card h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .about-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        .stats-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            padding: 3rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(10, 77, 104, 0.2);
+        }
+
+        .stat-box {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        .contact-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-info {
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .contact-description {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .contact-details {
+            margin-bottom: 3rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-item-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--light), rgba(5, 191, 219, 0.1));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contact-item-content {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-value {
+            font-size: 1.1rem;
+            color: var(--dark);
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+        }
+
+        .contact-value[href]:hover {
+            color: var(--primary-light);
+        }
+
+        .contact-note {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(252, 211, 77, 0.1));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--warning);
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .contact-note strong {
+            color: var(--warning);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section ul a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .stats-banner {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">MediPredict</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#models">Models</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Multi Disease Prediction System</h1>
+                <p class="hero-subtitle">
+                    Leveraging advanced machine learning algorithms to provide accurate and early detection 
+                    of critical health conditions. Empowering healthcare with AI-driven diagnostics.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">Prediction Models</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">95%+</span>
+                        <span class="stat-label">Accuracy Rate</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Fast</span>
+                        <span class="stat-label">Real-time Results</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cards-section" id="models">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Our Prediction Models</h2>
+                    <p class="section-description">
+                        Choose from our specialized disease prediction systems, each trained on extensive 
+                        medical datasets to deliver reliable diagnostic insights.
+                    </p>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="disease-card">
+                        <div class="card-icon heart">❤️</div>
+                        <h3 class="card-title">Heart Disease Detection</h3>
+                        <p class="card-description">
+                            Advanced cardiovascular risk assessment using multiple clinical parameters 
+                            to predict the likelihood of heart disease.
+                        </p>
+                        <ul class="card-features">
+                            <li>13+ clinical parameters analyzed</li>
+                            <li>Multiple ML algorithms</li>
+                            <li>Risk stratification</li>
+                            <li>Instant results</li>
+                        </ul>
+                        <a href="https://heart-disease-predictor.onrender.com/" class="card-button">Start Prediction →</a>
+                    </div>
+
+                    <div class="disease-card">
+                        <div class="card-icon skin">🩺</div>
+                        <h3 class="card-title">Skin Disease Detection</h3>
+                        <p class="card-description">
+                            Image-based dermatological analysis using deep learning to identify 
+                            various skin conditions and lesions.
+                        </p>
+                        <ul class="card-features">
+                            <li>Deep CNN architecture</li>
+                            <li>Multiple skin conditions</li>
+                            <li>Image upload support</li>
+                            <li>Visual analysis</li>
+                        </ul>
+                        <a href="https://skin-disease-detector-x12f.onrender.com" class="card-button">Start Prediction →</a>
+                    </div>
+
+                    <div class="disease-card">
+                        <div class="card-icon lung">🫁</div>
+                        <h3 class="card-title">Lung Cancer Detection</h3>
+                        <p class="card-description">
+                            CT scan and clinical data analysis for early detection of lung cancer 
+                            using state-of-the-art machine learning techniques.
+                        </p>
+                        <ul class="card-features">
+                            <li>CT scan analysis</li>
+                            <li>Clinical data integration</li>
+                            <li>Early stage detection</li>
+                            <li>High accuracy</li>
+                        </ul>
+                        <a href="lung-cancer.html" class="card-button">Start Prediction →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section" id="about">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">About MediPredict</h2>
+                    <p class="section-description">
+                        Bridging the gap between artificial intelligence and healthcare diagnostics
+                    </p>
+                </div>
+
+                <div class="about-content">
+                    <div class="about-card">
+                        <div class="about-icon">🎯</div>
+                        <h3>Our Mission</h3>
+                        <p>
+                            To democratize access to advanced medical diagnostics through cutting-edge machine learning 
+                            technology. We believe that early detection saves lives, and AI can make sophisticated 
+                            diagnostic tools accessible to healthcare providers and individuals worldwide.
+                        </p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">🔬</div>
+                        <h3>Our Technology</h3>
+                        <p>
+                            MediPredict leverages state-of-the-art machine learning algorithms including deep neural 
+                            networks, convolutional neural networks (CNNs), and ensemble methods. Our models are trained 
+                            on extensive medical datasets and validated against clinical standards to ensure reliability 
+                            and accuracy in disease prediction.
+                        </p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">🏥</div>
+                        <h3>Clinical Applications</h3>
+                        <p>
+                            Our multi-disease prediction system serves as a powerful screening tool for healthcare 
+                            professionals and a preliminary assessment platform for individuals. From cardiovascular 
+                            risk assessment to dermatological analysis and oncological screening, we cover critical 
+                            health domains with scientifically-validated AI models.
+                        </p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-icon">🤝</div>
+                        <h3>Our Commitment</h3>
+                        <p>
+                            We are committed to ethical AI development, patient privacy, and continuous improvement. 
+                            Our platform is designed for educational and research purposes, always emphasizing the 
+                            importance of professional medical consultation. We believe AI should augment, not replace, 
+                            the expertise of healthcare professionals.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stats-banner">
+                    <div class="stat-box">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value">10,000+</div>
+                            <div class="stat-desc">Training Samples</div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-value">&lt;2 Sec</div>
+                            <div class="stat-desc">Prediction Time</div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🎓</div>
+                        <div class="stat-content">
+                            <div class="stat-value">Research</div>
+                            <div class="stat-desc">Based Approach</div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🔒</div>
+                        <div class="stat-content">
+                            <div class="stat-value">Secure</div>
+                            <div class="stat-desc">Data Protection</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section" id="contact">
+            <div class="container">
+                <div class="contact-wrapper">
+                    <div class="contact-info">
+                        <h2 class="section-title">Get In Touch</h2>
+                        <p class="contact-description">
+                            Have questions about our platform or interested in collaboration? 
+                            We'd love to hear from you.
+                        </p>
+
+                        <div class="contact-details">
+                            <div class="contact-item">
+                                <div class="contact-item-icon">📧</div>
+                                <div class="contact-item-content">
+                                    <div class="contact-label">Email</div>
+                                    <a href="mailto:vhvkr2103@gmail.com" class="contact-value">vhvkr2103@gmail.com</a>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-item-icon">🌐</div>
+                                <div class="contact-item-content">
+                                    <div class="contact-label">Platform</div>
+                                    <div class="contact-value">Multi Disease Prediction System</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-item">
+                                <div class="contact-item-icon">💡</div>
+                                <div class="contact-item-content">
+                                    <div class="contact-label">Purpose</div>
+                                    <div class="contact-value">Research & Educational Project</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-note">
+                            <strong>Note:</strong> For medical emergencies, please contact your healthcare provider 
+                            or emergency services immediately. This platform is for informational purposes only.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MediPredict</h3>
+                    <p>
+                        An AI-powered multi-disease prediction platform designed to assist healthcare 
+                        professionals and individuals in early disease detection.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="heart-disease.html">Heart Disease</a></li>
+                        <li><a href="skin-disease.html">Skin Disease</a></li>
+                        <li><a href="lung-cancer.html">Lung Cancer</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Disclaimer</h3>
+                    <p>
+                        This system is for educational and research purposes. Always consult with 
+                        qualified healthcare professionals for medical diagnosis.
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Multi Disease Prediction System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
